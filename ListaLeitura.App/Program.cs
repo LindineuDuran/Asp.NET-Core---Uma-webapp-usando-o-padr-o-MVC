@@ -1,5 +1,6 @@
 ﻿using ListaLeitura.App.Negocio;
 using ListaLeitura.App.Repositorio;
+using Microsoft.AspNetCore.Hosting;
 using System;
 
 namespace ListaLeitura.App
@@ -10,9 +11,15 @@ namespace ListaLeitura.App
         {
             var _repo = new LivroRepositorioCSV();
 
-            ImprimeLista(_repo.ParaLer);
-            ImprimeLista(_repo.Lendo);
-            ImprimeLista(_repo.Lidos);
+            IWebHost host = new WebHostBuilder()
+                .UseKestrel()
+                .UseStartup<Startup>()
+                .Build();
+            host.Run();
+
+            //ImprimeLista(_repo.ParaLer);
+            //ImprimeLista(_repo.Lendo);
+            //ImprimeLista(_repo.Lidos);
 
             Console.ReadLine();
         }
