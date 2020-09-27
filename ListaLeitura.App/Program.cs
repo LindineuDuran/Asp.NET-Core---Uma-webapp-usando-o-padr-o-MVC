@@ -17,11 +17,7 @@ namespace ListaLeitura.App
                 .Build();
             host.Run();
 
-            //ImprimeLista(_repo.ParaLer);
-            //ImprimeLista(_repo.Lendo);
-            //ImprimeLista(_repo.Lidos);
-
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         static void ImprimeLista(ListaDeLeitura lista)
