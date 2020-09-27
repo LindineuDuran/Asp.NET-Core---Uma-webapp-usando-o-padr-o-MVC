@@ -16,18 +16,20 @@ namespace ListaLeitura.App
         public Task Roteamento(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
-            var caminhosAtendidos = new Dictionary<string, string>
+            var caminhosAtendidos = new Dictionary<string, RequestDelegate>
             {
-                { "/Livros/ParaLer", _repo.ParaLer.ToString() },
-                { "/Livros/Lendo", _repo.Lendo.ToString() },
-                { "/Livros/Lidos", _repo.Lidos.ToString() }
+                { "/Livros/ParaLer", LivrosParaLer },
+                { "/Livros/Lendo", LivrosLendo},
+                { "/Livros/Lidos", LivrosLidos }
             };
             
             if (caminhosAtendidos.ContainsKey(context.Request.Path))
             {
-                return context.Response.WriteAsync(caminhosAtendidos[context.Request.Path]);
+                var metodo = caminhosAtendidos[context.Request.Path];
+                return metodo.Invoke(context);
             }
 
+            context.Response.StatusCode = 404;
             return context.Response.WriteAsync("Caminho inexistente: " + context.Request.Path);
         }
 
@@ -35,6 +37,16 @@ namespace ListaLeitura.App
         {
             var _repo = new LivroRepositorioCSV();
             return context.Response.WriteAsync(_repo.ParaLer.ToString());
+        }
+        public Task LivrosLendo(HttpContext context)
+        {
+            var _repo = new LivroRepositorioCSV();
+            return context.Response.WriteAsync(_repo.Lendo.ToString());
+        }
+        public Task LivrosLidos(HttpContext context)
+        {
+            var _repo = new LivroRepositorioCSV();
+            return context.Response.WriteAsync(_repo.Lidos.ToString());
         }
     }
 }
