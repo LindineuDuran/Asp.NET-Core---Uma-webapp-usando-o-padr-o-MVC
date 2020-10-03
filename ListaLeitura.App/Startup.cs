@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ListaLeitura.App
 {
@@ -25,6 +25,8 @@ namespace ListaLeitura.App
             builder.MapRoute("/Livros/Lendo", LivrosLendo);
             builder.MapRoute("/Livros/Lidos", LivrosLidos);
             builder.MapRoute("/Cadastro/NovoLivro/{Nome}/{Autor}", NovoLivroParaLer);
+            builder.MapRoute("/Cadastro/NovoLivro", ExibeFormulario);
+            builder.MapRoute("/Cadastro/Incluir", ProcessaFormulario);
             builder.MapRoute("/Livros/Detalhes/{id:int}", ExibeDetalhes);
 
             var rotas = builder.Build();
@@ -49,11 +51,37 @@ namespace ListaLeitura.App
             return context.Response.WriteAsync(_repo.Lidos.ToString());
         }
 
+        private Task ExibeFormulario(HttpContext context)
+        {
+            var html = @"<html>
+                <form action = '/Cadastro/Incluir'>
+                    <input name = 'titulo'/>
+                    <input name = 'autor'/>
+                    <button>Gravar</button>
+                </form>
+            </html>";
+
+            return context.Response.WriteAsync(html);
+        }
+        public Task ProcessaFormulario(HttpContext context)
+        {
+            var livro = new Livro
+            {
+                Titulo = context.Request.Query["titulo"].First(),
+                Autor = context.Request.Query["autor"].First()
+            };
+
+            var repo = new LivroRepositorioCSV();
+            repo.Incluir(livro);
+
+            return context.Response.WriteAsync("Livro incluido com sucesso!!!");
+        }
+
         public Task NovoLivroParaLer(HttpContext context)
         {
             var livro = new Livro
             {
-                Titulo = context.GetRouteValue("nome").ToString(),
+                Titulo = context.GetRouteValue("titulo").ToString(),
                 Autor = context.GetRouteValue("autor").ToString()
             };
 
