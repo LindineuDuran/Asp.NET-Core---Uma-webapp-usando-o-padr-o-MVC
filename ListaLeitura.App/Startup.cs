@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace ListaLeitura.App
 {
@@ -38,37 +38,68 @@ namespace ListaLeitura.App
         public Task LivrosParaLer(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
-            return context.Response.WriteAsync(_repo.ParaLer.ToString());
+            var html = CarregaArquivoHtml("ParaLer");
+
+            foreach(var livro in _repo.ParaLer.Livros)
+            {
+                html = html.Replace("#NOVO-ITEM", $"<li>{livro.Titulo} - {livro.Autor}</li>#NOVO-ITEM");
+            }
+
+            html = html.Replace("#NOVO-ITEM", "");
+
+            return context.Response.WriteAsync(html);
         }
         public Task LivrosLendo(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
-            return context.Response.WriteAsync(_repo.Lendo.ToString());
+            var html = CarregaArquivoHtml("Lendo");
+
+            foreach (var livro in _repo.Lendo.Livros)
+            {
+                html = html.Replace("#NOVO-ITEM", $"<li>{livro.Titulo} - {livro.Autor}</li>#NOVO-ITEM");
+            }
+
+            html = html.Replace("#NOVO-ITEM", "");
+
+            return context.Response.WriteAsync(html);
         }
         public Task LivrosLidos(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
-            return context.Response.WriteAsync(_repo.Lidos.ToString());
+            var html = CarregaArquivoHtml("Lidos");
+
+            foreach (var livro in _repo.Lidos.Livros)
+            {
+                html = html.Replace("#NOVO-ITEM", $"<li>{livro.Titulo} - {livro.Autor}</li>#NOVO-ITEM");
+            }
+
+            html = html.Replace("#NOVO-ITEM", "");
+
+            return context.Response.WriteAsync(html);
         }
 
         private Task ExibeFormulario(HttpContext context)
         {
-            var html = @"<html>
-                <form action = '/Cadastro/Incluir'>
-                    <input name = 'titulo'/>
-                    <input name = 'autor'/>
-                    <button>Gravar</button>
-                </form>
-            </html>";
+            var html = CarregaArquivoHtml("Formulario");
 
             return context.Response.WriteAsync(html);
         }
+
+        private string CarregaArquivoHtml(string nomeArquivo)
+        {
+            var nomeCompletoArquivo = $"html/{nomeArquivo}.html";
+            using (var arquivo = File.OpenText(nomeCompletoArquivo))
+            {
+                return arquivo.ReadToEnd();
+            }
+        }
+
         public Task ProcessaFormulario(HttpContext context)
         {
             var livro = new Livro
             {
-                Titulo = context.Request.Query["titulo"].First(),
-                Autor = context.Request.Query["autor"].First()
+                Titulo = context.Request.Form["titulo"].First(),
+                Autor = context.Request.Form["autor"].First()
             };
 
             var repo = new LivroRepositorioCSV();
