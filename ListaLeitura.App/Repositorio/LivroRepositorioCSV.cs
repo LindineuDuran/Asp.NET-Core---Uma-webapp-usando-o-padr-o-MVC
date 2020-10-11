@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using ListaLeitura.App.Negocio;
 using System.IO;
 using System.Linq;
