@@ -31,7 +31,7 @@ namespace ListaLeitura.App.Logica
             return context.Response.WriteAsync("Livro incluido com sucesso!!!");
         }
 
-        public static Task NovoLivroParaLer(HttpContext context)
+        public static Task NovoLivro(HttpContext context)
         {
             var livro = new Livro
             {

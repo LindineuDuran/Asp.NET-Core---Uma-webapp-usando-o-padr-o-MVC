@@ -24,21 +24,21 @@ namespace ListaLeitura.App.Logica
             return html = html.Replace("#NOVO-ITEM", "");
         }
 
-        public static Task LivrosParaLer(HttpContext context)
+        public static Task ParaLer(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
             var html = CarregaLista(_repo.ParaLer.Livros);
 
             return context.Response.WriteAsync(html);
         }
-        public static Task LivrosLendo(HttpContext context)
+        public static Task Lendo(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
             var html = CarregaLista(_repo.Lendo.Livros);
 
             return context.Response.WriteAsync(html);
         }
-        public static Task LivrosLidos(HttpContext context)
+        public static Task Lidos(HttpContext context)
         {
             var _repo = new LivroRepositorioCSV();
             var html = CarregaLista(_repo.Lidos.Livros);
@@ -46,7 +46,7 @@ namespace ListaLeitura.App.Logica
             return context.Response.WriteAsync(html);
         }
 
-        public static Task ExibeDetalhes(HttpContext context)
+        public static Task Detalhes(HttpContext context)
         {
             int id = Convert.ToInt32(context.GetRouteValue("id"));
 
@@ -54,6 +54,11 @@ namespace ListaLeitura.App.Logica
             var livro = repo.Todos.FirstOrDefault(l => l.Id == id);
 
             return context.Response.WriteAsync(livro.Detalhes());
+        }
+
+        public static Task Teste(HttpContext context)
+        {
+            return context.Response.WriteAsync("A nova funcionalidade foi implementada!");
         }
     }
 }
