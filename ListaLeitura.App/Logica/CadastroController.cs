@@ -2,8 +2,7 @@
 using ListaLeitura.App.Negocio;
 using ListaLeitura.App.Repositorio;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace ListaLeitura.App.Logica
@@ -18,11 +17,11 @@ namespace ListaLeitura.App.Logica
             return "Livro incluido com sucesso!!!";
         }
 
-        public static Task ExibeFormulario(HttpContext context)
+        public IActionResult ExibeFormulario()
         {
-            var html = HtmlUtils.CarregaArquivoHTML("Formulario");
+            var html = new ViewResult{ViewName = "formulario"};
 
-            return context.Response.WriteAsync(html);
+            return html;
         }
     }
 }

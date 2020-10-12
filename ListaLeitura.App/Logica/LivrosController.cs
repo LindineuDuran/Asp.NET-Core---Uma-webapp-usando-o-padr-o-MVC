@@ -2,16 +2,17 @@
 using ListaLeitura.App.Negocio;
 using ListaLeitura.App.Repositorio;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ListaLeitura.App.Logica
 {
-    public class LivrosController
+    public class LivrosController : Controller
     {
+        IEnumerable<Livro> Livros { get; set; }
+
         private static string CarregaLista(IEnumerable<Livro> livros)
         {
             var html = HtmlUtils.CarregaArquivoHTML("lista");
@@ -24,26 +25,23 @@ namespace ListaLeitura.App.Logica
             return html = html.Replace("#NOVO-ITEM", "");
         }
 
-        public static Task ParaLer(HttpContext context)
+        public IActionResult ParaLer()
         {
             var _repo = new LivroRepositorioCSV();
-            var html = CarregaLista(_repo.ParaLer.Livros);
-
-            return context.Response.WriteAsync(html);
+            ViewBag.Livros = _repo.ParaLer.Livros;
+            return View("lista");
         }
-        public static Task Lendo(HttpContext context)
+        public IActionResult Lendo()
         {
             var _repo = new LivroRepositorioCSV();
-            var html = CarregaLista(_repo.Lendo.Livros);
-
-            return context.Response.WriteAsync(html);
+            ViewBag.Livros = _repo.Lendo.Livros;
+            return View("lista");
         }
-        public static Task Lidos(HttpContext context)
+        public IActionResult Lidos()
         {
             var _repo = new LivroRepositorioCSV();
-            var html = CarregaLista(_repo.Lidos.Livros);
-
-            return context.Response.WriteAsync(html);
+            ViewBag.Livros = _repo.Lidos.Livros;
+            return View("lista");
         }
 
         public string Detalhes(int id)
